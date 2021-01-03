@@ -1,0 +1,159 @@
+
+<app-header></app-header>
+<!-- <router-outlet></router-outlet> -->
+
+
+<div class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-12">
+      <h2>Locator</h2>
+    </div>
+    <div class="col-12 mt-3">
+      <div class="row justify-content-md-between">
+        <div class="col-12 col-md-5 col-lg-4 my-2">
+          <div class="w-100">
+            <div class="input-group">
+              <input type="text" class="form-control" name="searchInput" [(ngModel)]="searchInput" (ngModelChange)="Search()" placeholder="Search this blog">
+              <div class="input-group-append">
+                <button class="btn btn-secondary" type="button">
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-5 col-lg-4">
+          <div class="w-100 my-2">
+            <ng-multiselect-dropdown
+              [settings]="dropdownSettings"
+              [placeholder]="'Choose States'"
+              [data]="statesArr"
+              [(ngModel)]="selectedItems"
+              (onSelect)="onItemSelect($event)"
+              (onSelectAll)="onSelectAll($event)"
+              (onDeSelect)="onItemDeSelect($event)"
+              (onDeSelectAll)="onDeSelectAll($event)"
+            >
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="w-100 d-flex flex-column flex-md-row justify-content-start justify-content-md-between px-2">
+        <p class="mb-1">List of offices</p>
+        <p class="mb-1 modal-header-desc">Displaying {{ (config.currentPage - 1) * config.itemsPerPage + 1 }} - {{ config.currentPage * config.itemsPerPage }} of {{ officeArr.length }}</p>
+      </div>
+    </div>
+    <div class="col-12 mt-2">
+      <div class="w-100" style="overflow-x: auto;">
+        <table class="table">
+          <thead class="bg-blue">
+            <tr>
+              <th scope="col" class="border-btm">No</th>
+              <th (click)="setOrder('officeArr.ste')" scope="col" class="border-btm d-none d-md-block cursor-pointer">State <i class="fas fa-sort"></i></th>
+              <th (click)="setOrder('officeArr.nam')" scope="col" class="border-btm w-50 cursor-pointer">Address <i class="fas fa-sort"></i></th>
+              <th (click)="setOrder('officeArr.distance')" scope="col" class="border-btm text-center cursor-pointer">Distance <i class="fas fa-sort"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="officeArr.length > 0; else elseBlock">
+              <tr *ngFor="let item of officeArr | orderBy: order:reverse:'case-insensitive' | paginate: config ; let i = index;" (click)="openModal(template,item)" class="cursor-pointer hov">
+                <th scope="row">{{i+1}}</th>
+                <td class="d-none d-md-block modal-header-desc">{{filterStates(item.ste)}}</td>
+                <td>
+                  <p class="mb-1 modal-header-title">{{item.nam}}</p>
+                  <p class="mb-1 modal-header-desc">{{item.ads}}</p>
+                </td>
+                <td class="text-center modal-header-desc">{{item.distanceWithKMorM}}
+                </td>
+              </tr>
+            </ng-container>
+            <ng-template #elseBlock>
+              <tr>
+                <td rowspan="1">Records is not found</td>
+              </tr>
+            </ng-template>
+            
+          </tbody>
+        </table>
+      </div>
+      
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="w-100 d-flex justify-content-center justify-content-md-end px-2">
+      <pagination-controls (pageChange)="pageChange($event)" class="my-pagination" directionLinks="true" responsive="true"></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Modal -->
+
+<ng-template #template>
+  <!-- <div class="modal-header">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div> -->
+  <div class="modal-body">
+    <div class="w-100">
+      <agm-map [latitude]="modalDetails.lat" [longitude]="modalDetails.long" [zoom]="13">
+        <agm-marker [latitude]="modalDetails.lat" [longitude]="modalDetails.long"></agm-marker>
+      </agm-map>
+    </div>
+    <div class="w-100 mt-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <p class="mb-1 modal-header-title">Office Name :</p>
+          </div>
+          <div class="col-12">
+            <p class="modal-header-desc">{{modalDetails.name}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p class="mb-1 modal-header-title">Address :</p>
+          </div>
+          <div class="col-12">
+            <p class="modal-header-desc">{{modalDetails.address}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p class="mb-1 modal-header-title">Distance :</p>
+          </div>
+          <div class="col-12">
+            <p class="modal-header-desc">{{modalDetails.distance}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p class="mb-1 modal-header-title">Fax Number :</p>
+          </div>
+          <div class="col-12">
+            <p class="modal-header-desc">{{modalDetails.fax}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w-100 d-flex flex-row justify-content-end">
+      <div class="mx-2">
+        <button class="btn btn-secondary" type="button" aria-label="Close" (click)="modalRef.hide()">Close</button>
+      </div>
+      <div>
+        <button class="btn btn-primary" (click)="goToLink(modalDetails.link)">Open in Maps</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

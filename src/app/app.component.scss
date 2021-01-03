@@ -1,0 +1,53 @@
+// search input
+$sm: 576px;
+$tablet: 768px;
+$small-desktop: 992px;
+$large-desktop: 1200px;
+
+
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+
+.border-btm{
+    border: none;
+}
+
+agm-map {
+    height: 400px;
+}
+
+.modal-header-title{
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.modal-header-desc{
+    font-weight: 500;
+    font-size: 14px;
+    color: #353434;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+.bg-blue{
+    background: #312782 !important;
+    color: white;
+}
+.hov:hover{
+    background: #cceecc;
+}
+
